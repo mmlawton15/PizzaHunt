@@ -96,7 +96,7 @@ function printReply(reply) {
 `;
 }
 
-function handleNewCommentSubmit(event) { //THIS FUNCTION HAS WEIRD PARENTHESES
+function handleNewCommentSubmit(event) {
   event.preventDefault();
 
   const commentBody = $newCommentForm.querySelector('#comment').value;
@@ -124,12 +124,13 @@ function handleNewCommentSubmit(event) { //THIS FUNCTION HAS WEIRD PARENTHESES
     })
     .then(commentResponse => {
       console.log(commentResponse);
-      location.reload();
+      // location.reload();
     })
     .catch(err => {
       console.log(err);
     });
 }
+
 
 function handleNewReplySubmit(event) {
   event.preventDefault();
@@ -148,6 +149,28 @@ function handleNewReplySubmit(event) {
   }
 
   const formData = { writtenBy, replyBody };
+
+  fetch(`/api/comments/${pizzaId}/${commentId}`, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+      response.json();
+    })
+    .then(commentResponse => {
+      console.log(commentResponse);
+      location.reload();
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 $backBtn.addEventListener('click', function() {
